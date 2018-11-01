@@ -1,21 +1,23 @@
 package com.neuedu.sell.service.impl;
 
+import com.neuedu.sell.converter.OrderMaster2OrderDTOConverter;
 import com.neuedu.sell.dto.CartDTO;
 import com.neuedu.sell.dto.OrderDTO;
 import com.neuedu.sell.entity.OrderDetail;
 import com.neuedu.sell.entity.OrderMaster;
 import com.neuedu.sell.entity.ProductInfo;
+import com.neuedu.sell.enums.OrderStatusEnum;
 import com.neuedu.sell.enums.ResultEnum;
 import com.neuedu.sell.exception.SellException;
 import com.neuedu.sell.repository.OrderDetailRepository;
 import com.neuedu.sell.repository.OrderMasterRepositoty;
-import com.neuedu.sell.repository.ProductInfoRepository;
 import com.neuedu.sell.service.OrderService;
 import com.neuedu.sell.service.ProductInfoService;
 import com.neuedu.sell.utils.KeyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,18 +91,59 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO findOne(String openId) {
-        return null;
+    public OrderDTO findOne(String orderId) {
+
+        OrderMaster orderMaster = orderMasterRepositoty.findOne(orderId);
+        if (orderMaster == null){
+            throw new SellException(ResultEnum.ORDER_NOT_EXIST);
+        }
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderId(orderId);
+        if (orderDetailList.size() == 0){
+            throw new SellException(ResultEnum.ORDERDETAILE_NOT_EXIST);
+        }
+        OrderDTO orderDTO = OrderMaster2OrderDTOConverter.convert(orderMaster);
+        orderDTO.setOrderDetailList(orderDetailList);
+
+        return orderDTO;
     }
 
     @Override
     public Page<OrderDTO> findList(String buyerOpenid, Pageable pageable) {
-        return null;
+
+        Page<OrderMaster> page = orderMasterRepositoty.findByBuyerOpenid(buyerOpenid,pageable);
+        List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(page.getContent());
+
+        return new PageImpl<>(orderDTOList,pageable,page.getTotalElements());
     }
 
     @Override
     public OrderDTO cancel(OrderDTO orderDTO) {
-        return null;
+        //订单应该从数据库中查出来
+        OrderMaster orderMaster = orderMasterRepositoty.findOne(orderDTO.getOrderId());
+
+        //1.判断订单状态
+        if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
+            throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
+        }
+        //2.修改订单状态
+        orderMaster.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
+        orderMasterRepositoty.save(orderMaster);
+        //3.返还库存
+        List<CartDTO> cartDTOList = new ArrayList<>();
+
+        //根据OrderId查询orderDetaile集合
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderId(orderMaster.getOrderId());
+
+
+        for (OrderDetail orderDetail : orderDetailList) {
+            cartDTOList.add(new CartDTO(orderDetail.getProductId(),orderDetail.getProductQuantity()));
+        }
+        productInfoService.increaseStock(cartDTOList);
+        //4.如果已支付需要退款
+
+
+
+        return orderDTO;
     }
 
     @Override

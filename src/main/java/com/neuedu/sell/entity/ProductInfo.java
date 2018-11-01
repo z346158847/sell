@@ -4,7 +4,6 @@ import com.neuedu.sell.enums.ProductStatusEnum;
 import lombok.Data;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 

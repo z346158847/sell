@@ -7,7 +7,6 @@ import com.neuedu.sell.entity.ProductCategory;
 import com.neuedu.sell.entity.ProductInfo;
 import com.neuedu.sell.service.ProductCategoryService;
 import com.neuedu.sell.service.ProductInfoService;
-import com.neuedu.sell.service.impl.ProductInfoServiceImpl;
 import com.neuedu.sell.utils.ResultVOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

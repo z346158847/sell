@@ -2,7 +2,6 @@ package com.neuedu.sell.exception;
 
 import com.neuedu.sell.enums.ResultEnum;
 
-import javax.persistence.criteria.CriteriaBuilder;
 
 public class SellException extends RuntimeException{
 

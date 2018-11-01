@@ -5,7 +5,6 @@ import com.neuedu.sell.enums.OrderStatusEnum;
 import com.neuedu.sell.enums.PayStatusEnum;
 import lombok.Data;
 
-import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;

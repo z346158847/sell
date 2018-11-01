@@ -5,7 +5,6 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -23,7 +22,8 @@ public class ProductCategory {
     /*类别编号*/
     private Integer categoryType;
     /*创建时间*/
-    //private Date createTime;
+    private Date createTime;
     /*修改时间*/
-    //private Date updateTime;
+    private Date updateTime;
+
 }
