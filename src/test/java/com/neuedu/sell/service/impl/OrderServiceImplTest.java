@@ -63,8 +63,18 @@ public class OrderServiceImplTest {
         list.add(new OrderDetail("2018110102",5));
         orderDTO.setOrderDetailList(list);
         orderService.cancel(orderDTO);
-
-
+    }
+    @Test
+    public void finishTest(){
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setOrderId("1541033641752757492");
+        orderService.finish(orderDTO);
+    }
+    @Test
+    public void paidTest(){
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setOrderId("1541033641752757492");
+        orderService.paid(orderDTO);
     }
 
 }

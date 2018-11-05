@@ -9,7 +9,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,11 +26,9 @@ public class OrderDetailRepositoryTest {
         orderDetail.setProductQuantity(5);
         orderDetail.setProductName("冰粥");
         orderDetailRepository.save(orderDetail);
-
     }
     @Test
     public void findByOrderId(){
-
         for (OrderDetail orderDetail : orderDetailRepository.findByOrderId("123456788")) {
             System.out.println(orderDetail);
         }
