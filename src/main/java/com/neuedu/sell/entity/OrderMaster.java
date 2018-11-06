@@ -31,7 +31,7 @@ public class OrderMaster {
     private String buyerOpenid;
     /* 订单总金额 */
     private BigDecimal orderAmount ;
-    /* 订单状态，0为新下单 */
+    /* 订单状态，0为新下单,1为已完成，2为取消 */
     private Integer orderStatus = OrderStatusEnum.NEW.getCode();
     /* 支付状态，0未支付，1已支付 */
     private Integer payStatus = PayStatusEnum.NOT_PAY.getCode();

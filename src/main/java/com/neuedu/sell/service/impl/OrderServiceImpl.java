@@ -1,5 +1,6 @@
 package com.neuedu.sell.service.impl;
 
+import com.neuedu.sell.converter.OrderForm2OrderDTOConverter;
 import com.neuedu.sell.converter.OrderMaster2OrderDTOConverter;
 import com.neuedu.sell.dto.CartDTO;
 import com.neuedu.sell.dto.OrderDTO;
@@ -36,8 +37,6 @@ public class OrderServiceImpl implements OrderService {
     private OrderDetailRepository orderDetailRepository;
     @Autowired
     private OrderMasterRepositoty orderMasterRepositoty;
-
-
     @Autowired
     private ProductInfoService productInfoService;
 
@@ -57,20 +56,16 @@ public class OrderServiceImpl implements OrderService {
             }
             //2.计算总价
             orderAmount = orderAmount.add(productInfo.getProductPrice().multiply(new BigDecimal(orderDetail.getProductQuantity())))  ;
-            //订单详情入库
-
             //复制商品信息
             BeanUtils.copyProperties(productInfo,orderDetail);
             //设置订单Id
             orderDetail.setOrderId(orderId);
             //设置此数据的Id
             orderDetail.setDetailId(KeyUtils.generateUniqueKey());
-
+            //设置总价
             orderDTO.setOrderAmount(orderAmount);
-
+            //保存到数据库中//订单详情入库
             orderDetailRepository.save(orderDetail);
-
-
         }
         //3.订单主表入库
         OrderMaster orderMaster = new OrderMaster();
@@ -114,11 +109,11 @@ public class OrderServiceImpl implements OrderService {
         return new PageImpl<>(orderDTOList,pageable,page.getTotalElements());
     }
 
+
     @Override
     public OrderDTO cancel(OrderDTO orderDTO) {
         //订单应该从数据库中查出来
         OrderMaster orderMaster = orderMasterRepositoty.findOne(orderDTO.getOrderId());
-
         //1.判断订单状态
         if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
             throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
@@ -128,19 +123,14 @@ public class OrderServiceImpl implements OrderService {
         orderMasterRepositoty.save(orderMaster);
         //3.返还库存
         List<CartDTO> cartDTOList = new ArrayList<>();
-
-        //根据OrderId查询orderDetaile集合
+        //根据OrderId查询orderDetail集合
         List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderId(orderMaster.getOrderId());
-
-
         for (OrderDetail orderDetail : orderDetailList) {
             cartDTOList.add(new CartDTO(orderDetail.getProductId(),orderDetail.getProductQuantity()));
         }
         productInfoService.increaseStock(cartDTOList);
         //4.如果已支付需要退款
-
         orderDTO.setBuyerOpenid(orderMaster.getBuyerOpenid());
-
         return orderDTO;
     }
 
@@ -173,4 +163,16 @@ public class OrderServiceImpl implements OrderService {
         orderMasterRepositoty.save(orderMaster);
         return orderDTO;
     }
+
+
+    @Override
+    public Page<OrderDTO> findList(Pageable pageable) {
+        Page<OrderMaster> orderMasterPage = orderMasterRepositoty.findAll(pageable);
+        List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
+
+
+        return new PageImpl<>(orderDTOList,pageable,orderMasterPage.getTotalElements());
+    }
+
+
 }

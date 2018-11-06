@@ -34,17 +34,21 @@ public class BuyerOrderController {
 
     @PostMapping("/create")
     public ResultVO<Map<String,String>> create(@Valid OrderForm orderForm, BindingResult bindingResult){
+        //Valid配合OrderForm中的NotEmpty可以实现参数校验，再
+        // 利用BindingResult中的hasErrors可以判断是否异常，
+        //bindingResult.getFieldError().getDefaultMessage
+        //返回NotEmpty注解上的message
         //1.校验参数的合法性
         if (bindingResult.hasErrors()){
             throw new SellException(ResultEnum.PARAM_ERROR.getCode(),bindingResult.getFieldError().getDefaultMessage());
         }
         //2.转化为OrderDTO的类型
-        OrderDTO orderDTO = OrderForm2OrderDTOConverter.covert(orderForm);
+        OrderDTO orderDTO = OrderForm2OrderDTOConverter.convert(orderForm);
         //3.调用业务层去创建订单
-        OrderDTO resuleDTO = orderService.create(orderDTO);
+        OrderDTO resultDTO = orderService.create(orderDTO);
 
         Map<String,String> map = new HashMap<>();
-        map.put("orderId",resuleDTO.getOrderId());
+        map.put("orderId",resultDTO.getOrderId());
         return ResultVOUtils.success(map);
     }
 

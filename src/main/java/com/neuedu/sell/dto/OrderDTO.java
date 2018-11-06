@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.neuedu.sell.entity.OrderDetail;
 import com.neuedu.sell.enums.OrderStatusEnum;
 import com.neuedu.sell.enums.PayStatusEnum;
+import com.neuedu.sell.utils.EnumUtil;
 import com.neuedu.sell.utils.serializer.Date2langSerializer;
 import lombok.Data;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,6 @@ import java.util.List;
 
 @Data
 public class OrderDTO {
-
 
     private String orderId;
     /* 买家姓名 */
@@ -39,5 +39,23 @@ public class OrderDTO {
     private Date updateTime;
     /* 订单详情的集合 */
     private List<OrderDetail> orderDetailList;
+
+    public OrderStatusEnum getOrderStatusEnum(){
+        //封装为enumUtil
+       /* //根据orderStatus的值来返回不同的OrderStatusEnum
+        for (OrderStatusEnum orderStatusEnum : OrderStatusEnum.values()) {
+            if (orderStatus.equals(orderStatusEnum.getCode())){
+                return
+            }
+        }*/
+        return EnumUtil.getEnumByCode(orderStatus, OrderStatusEnum.class);
+    }
+
+    public   PayStatusEnum getPayStatusEnum(){
+
+        return EnumUtil.getEnumByCode(payStatus, PayStatusEnum.class);
+    }
+
+
 
 }

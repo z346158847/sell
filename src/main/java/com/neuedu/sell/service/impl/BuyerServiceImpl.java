@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BuyerServiceImpl implements BuyerService {
     @Autowired
     private OrderService orderService;
-
     @Override
     public OrderDTO findOrderOne(String openid, String orderId) {
         OrderDTO  orderDTO = orderService.findOne(orderId);
@@ -22,14 +21,12 @@ public class BuyerServiceImpl implements BuyerService {
         }
         return orderDTO;
     }
-
     @Override
     @Transactional
     public OrderDTO cancelOrder(String openid, String orderId) {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setOrderId(orderId);
         OrderDTO result = orderService.cancel(orderDTO);
-
         if (!result.getBuyerOpenid().equalsIgnoreCase(openid)){
             throw new SellException(ResultEnum.PARAM_ERROR);
         }

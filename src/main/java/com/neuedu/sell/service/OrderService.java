@@ -8,16 +8,14 @@ import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 
-
     /**
      * 创建订单
      */
     OrderDTO create(OrderDTO orderDTO);
 
-
     /**
      * 根据订单ID来查询
-     * @param openId
+     * @param orderId
      * @return
      */
     OrderDTO findOne(String orderId);
@@ -29,6 +27,14 @@ public interface OrderService {
      * @return
      */
     Page<OrderDTO> findList(String buyerOpenid, Pageable pageable);
+
+
+    /**
+     * 查询订单列表，卖家端用
+     * @param pageable
+     * @return
+     */
+    Page<OrderDTO> findList(Pageable pageable);
 
     /**
      * 取消订单

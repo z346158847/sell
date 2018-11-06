@@ -13,7 +13,6 @@ public class KeyUtils {
         Random random = new Random();
         int number =  random.nextInt(900000) + 100000;
 
-
         return String.valueOf(System.currentTimeMillis()) + number;
 
     }
