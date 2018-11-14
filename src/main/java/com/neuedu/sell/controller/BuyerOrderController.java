@@ -26,12 +26,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/buyer/order")
 public class BuyerOrderController {
-
     @Autowired
     private OrderService orderService;
     @Autowired
     private BuyerService buyerService;
-
     @PostMapping("/create")
     public ResultVO<Map<String,String>> create(@Valid OrderForm orderForm, BindingResult bindingResult){
         //Valid配合OrderForm中的NotEmpty可以实现参数校验，再
@@ -65,9 +63,7 @@ public class BuyerOrderController {
         Page<OrderDTO> orderDTOPage = orderService.findList(openid,request);
         //包装结果集
         return ResultVOUtils.success(orderDTOPage.getContent());
-
     }
-
     @GetMapping("/detail")
     public ResultVO detail(@RequestParam("openid") String openid,
                            @RequestParam("orderId") String orderId){
@@ -81,11 +77,9 @@ public class BuyerOrderController {
         OrderDTO orderDTO = buyerService.findOrderOne(openid,orderId);
         return ResultVOUtils.success(orderDTO);
     }
-
     @PostMapping("/cancel")
     public ResultVO cancel(@RequestParam("openid") String openid,
                            @RequestParam("orderId") String orderId){
-
         //校验参数合法性
         if (StringUtils.isEmpty(openid)  || StringUtils.isEmpty(orderId)){
             throw new SellException(ResultEnum.PARAM_ERROR);
@@ -94,12 +88,6 @@ public class BuyerOrderController {
         //TODO 不安全会有横向越权问题
         //使用buyerService去判断
         buyerService.cancelOrder(openid, orderId);
-
         return ResultVOUtils.success();
     }
-
-
-
-
-
 }

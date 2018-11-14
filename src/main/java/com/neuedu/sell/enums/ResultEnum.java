@@ -12,7 +12,11 @@ public enum  ResultEnum {
     ORDERDETAILE_NOT_EXIST(14,"订单没有商品信息"),
     ORDER_STATUS_ERROR(15,"订单状态不正确"),
     PAY_STATUS_ERROR(16,"支付状态不正确"),
-    PARAM_ERROR(17,"参数异常");
+    PARAM_ERROR(17,"参数异常"),
+    ORDER_CANCEL_SUCCESS(18,"订单取消成功"),
+    ORDER_FINISH_SUCCESS(19,"订单完成成功"),
+    PRODUCT_ON_SUCCESS(20,"商品上架成功"),
+    PRODUCT_OFF_SUCCESS(21,"商品下架成功");
 
 
 

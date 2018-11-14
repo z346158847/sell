@@ -25,10 +25,10 @@ public interface ProductInfoService {
 
     /**
      * 根据id查询
-     * @param productInfoId
+     * @param productId
      * @return
      */
-    ProductInfo findOne(String productInfoId);
+    ProductInfo findOne(String productId);
 
     /**
      * 增加或修改
